@@ -1,0 +1,28 @@
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
+
+const Slot = require('./models/Slot'); 
+
+dotenv.config();
+
+const dummySlots = [
+  { number: 'A1', isAvailable: true },
+  { number: 'A2', isAvailable: false },
+  { number: 'A3', isAvailable: true },
+  { number: 'B1', isAvailable: true },
+  { number: 'B2', isAvailable: false },
+  { number: 'C1', isAvailable: true },
+];
+
+mongoose.connect(process.env.MONGO_URI)
+  .then(async () => {
+    console.log('Connected to MongoDB for seeding...');
+    await Slot.deleteMany({}); // Clears out any old data
+    await Slot.insertMany(dummySlots);
+    console.log('✅ 6 Parking Slots added to the database!');
+    process.exit();
+  })
+  .catch(err => {
+    console.error('❌ Seeding failed:', err);
+    process.exit(1);
+  });
